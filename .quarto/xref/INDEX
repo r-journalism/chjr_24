@@ -1,0 +1,23 @@
+{
+  "index.qmd": {
+    "index.html": "c9e496aa"
+  },
+  "tidying/index.qmd": {
+    "index.html": "2a388955"
+  },
+  "about.qmd": {
+    "about.html": "2bb18e6b"
+  },
+  "visualizing/index.qmd": {
+    "index.html": "46606048"
+  },
+  "wrangling/index.qmd": {
+    "index.html": "8ad2cb95"
+  },
+  "importing/index.qmd": {
+    "index.html": "0139dd26"
+  },
+  "getting_started/index.qmd": {
+    "index.html": "4f06d3cb"
+  }
+}
