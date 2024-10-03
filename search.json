@@ -1,0 +1,60 @@
+[
+  {
+    "objectID": "getting_started/index.html",
+    "href": "getting_started/index.html",
+    "title": "chjr2024",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2",
+    "crumbs": [
+      "Getting Started",
+      "chjr2024"
+    ]
+  },
+  {
+    "objectID": "wrangling/index.html",
+    "href": "wrangling/index.html",
+    "title": "chjr2024",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2",
+    "crumbs": [
+      "Wranging Data",
+      "chjr2024"
+    ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "About this site\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "tidying/index.html",
+    "href": "tidying/index.html",
+    "title": "chjr2024",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2",
+    "crumbs": [
+      "Tidying Data",
+      "chjr2024"
+    ]
+  },
+  {
+    "objectID": "visualizing/index.html",
+    "href": "visualizing/index.html",
+    "title": "chjr2024",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "importing/index.html",
+    "href": "importing/index.html",
+    "title": "chjr2024",
+    "section": "",
+    "text": "This is a Quarto website.\nTo learn more about Quarto websites visit https://quarto.org/docs/websites.\n\n1 + 1\n\n[1] 2",
+    "crumbs": [
+      "Importing Data",
+      "chjr2024"
+    ]
+  }
+]
