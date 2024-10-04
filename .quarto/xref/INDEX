@@ -19,5 +19,41 @@
   },
   "getting_started/index.qmd": {
     "index.html": "4f06d3cb"
+  },
+  "getting_started/1_intro_a.Rmd": {
+    "1_intro_a.html": "a0a3d933"
+  },
+  "tidying/math_pivots.qmd": {
+    "math_pivots.html": "d09ffc02"
+  },
+  "tidying/joining.qmd": {
+    "joining.html": "521d605f"
+  },
+  "visualizing/viz.qmd": {
+    "viz.html": "639cd016"
+  },
+  "visualizing/exploratory_viz.qmd": {
+    "exploratory_viz.html": "4d8b9f66"
+  },
+  "wrangling/mutate_summarize.qmd": {
+    "mutate_summarize.html": "5fa75df0"
+  },
+  "wrangling/explore_arrange.qmd": {
+    "explore_arrange.html": "282dee96"
+  },
+  "wrangling/filter_select.qmd": {
+    "filter_select.html": "5783a8f5"
+  },
+  "importing/importing_excel.qmd": {
+    "importing_excel.html": "e0281ddd"
+  },
+  "importing/importing_csv.qmd": {
+    "importing_csv.html": "768d8cc4"
+  },
+  "getting_started/r_and_rstudio.qmd": {
+    "r_and_rstudio.html": "81c8d158"
+  },
+  "getting_started/data_types.qmd": {
+    "data_types.html": "7fd82ce9"
   }
 }

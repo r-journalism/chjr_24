@@ -1,8 +1,8 @@
 {
-  "hash": "d28838126ade0bcd2733dd701e235d86",
+  "hash": "bf4f6862f9af4800cb33331ee620fa40",
   "result": {
     "engine": "knitr",
-    "markdown": "---\ntitle: R Example\nengine: knitr\nformat: live-html\n---\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n```{webr}\nfor (x in 1:5) {\n  print(x ** 2)\n}\n```\n:::\n",
+    "markdown": "---\ntitle: R Example\nengine: knitr\nformat: live-html\nwebr:\n  packages:\n    - dplyr\n---\n\n::: {.cell}\n\n:::\n\n::: {.cell}\n```{webr}\nfor (x in 1:5) {\n  print(x ** 2)\n}\n```\n:::\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"

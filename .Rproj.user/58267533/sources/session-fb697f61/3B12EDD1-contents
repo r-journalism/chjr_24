@@ -12,17 +12,25 @@ website:
       - href: index.qmd
       - section: Getting Started
         contents:
-          - getting_started/index.qmd
+          - getting_started/r_and_rstudio.qmd
+          - getting_started/data_types.qmd
       - section: Importing Data
         contents:
-          - importing/index.qmd
+          - importing/importing_csv.qmd
+          - importing/importing_excel.qmd
       - section: Wranging Data
         contents:
-          - wrangling/index.qmd
+          - wrangling/explore_arrange.qmd
+          - wrangling/filter_select.qmd
+          - wrangling/mutate_summarize.qmd
       - section: Tidying Data
         contents:
-          - tidying/index.qmd
-
+          - tidying/joining.qmd
+          - tidying/math_pivots.qmd
+      - section: Visualizing Data
+        contents:
+          - visualizing/viz.qmd
+          - visualizing/exploratory_viz.qmd
       - text: "---"
       - section: Reference
 
