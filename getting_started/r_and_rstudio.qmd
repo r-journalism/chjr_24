@@ -1,21 +1,17 @@
 ---
-title: R and RStudio
+title: Intro to R and RStudio
 engine: knitr
 format: live-html
 webr:
   packages:
     - dplyr
+    - gradethis
 resources:
   - images
 ---
 
 {{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
 
-```{webr 1}
-for (x in 1:5) {
-  print(x ** 2)
-}
-```
 
 ```{webr 2}
 #| setup: true
@@ -25,6 +21,7 @@ a <- 4
 j <- c(1,2,NA)
 b <- c(300,4000,50)
 ```
+
 
 ```{webr 3}
 #| edit: false
@@ -37,20 +34,6 @@ ok_reponse <- function(reponse, n) {
   else if (reponse == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
-```
-
-```{ojs}
-//| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
-  new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
-  ])
-);
-ok_reponse(reponse, 2);
 ```
 
 [welcome to class!]{style="color:white"}
@@ -296,7 +279,7 @@ The `a` you defined was scalar.
 To define a vector with the numbers 3,4, and 5, you need the function `c()` which is short for concatenate (or paste together).
 
 ```{webr}
-#| exercise: getting_started_12
+#| exercise: getting_started_12b
 b <- c(3,4,5)
 b
 ```

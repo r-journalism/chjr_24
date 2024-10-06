@@ -1,30 +1,48 @@
 ---
-title: Exploring and arranging data
+title: Exploring, arrange, count
 engine: knitr
 format: live-html
 webr:
   packages:
+    - tidyverse
+    - readr
     - dplyr
+    - lubridate
+    - gradethis
 resources:
   - images
 ---
 
+
 {{< include ../_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ../_extensions/r-wasm/live/_gradethis.qmd >}}
 
-```{webr 1}
-for (x in 1:5) {
-  print(x ** 2)
-}
-```
 
-```{webr 2}
+```{webr}
 #| setup: true
-#| 
 
-a <- 4
-j <- c(1,2,NA)
-b <- c(300,4000,50)
+library(tidyverse)
+library(lubridate)
+df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
+
+incident_types <- count(df, incidentType, name="total")
+incident_types_arranged <- arrange(incident_types, desc(total))
+
+floods <- df |> filter(incidentType=="Flood")
+floods_adjusted <- floods |> 
+  mutate(year=year(declarationDate))
+floods_match <- floods_adjusted |> 
+  mutate(year_match=
+           case_when(year==fyDeclared ~ "Match",
+                     TRUE ~ "Not a match"
+  )) |> 
+  group_by(year_match) |> 
+  summarize(total=n())
+floods_match_count <- floods_match |> 
+  filter(year_match=="Not a match") |> 
+  pull(total)
 ```
+
 
 ```{webr 3}
 #| edit: false
@@ -39,372 +57,478 @@ ok_reponse <- function(reponse, n) {
 }
 ```
 
-```{ojs}
-//| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
-  new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
-  ])
-);
-ok_reponse(reponse, 2);
+## Intro
+
+
+In this lesson, we're going to start exploring data with the package **dplyr.**
+
+* It's designed to work with data frames, which is what journalists are used to
+* Great for data exploration and transformation
+* Intuitive to write and easy to read, especially when using the “chaining” syntax of pipes
+
+These are the functions/data analysis verbs we'll be going over:
+
+* filter()
+* select()
+* arrange()
+* mutate()
+* summarize() plus group_by()
+
+First, let's bring in the data.
+
+## Importing
+
+**We're going to play around with historical FEMA disaster declaration data.**
+
+First steps when analyzing data in R.
+
+Bring in the appropriate packages.
+
+Let's start out with **tidyverse** which is a suite of packages that are consistently used to import, wrangle, and visualize data. It's one package that installs, like nearly a dozen other ones such as **readr**, **dplyr**, **tidyr** and **ggplot2**. The **lubridate** package is for dealing with dates.
+
+And we'll also need to bring the data in. 
+
+You can download it and import it locally, but if it's a csv, you can just link to it and R will download it for you in the function.
+
+Use the function from the **readr** package to import the csv from the URL. (This will take several moments to download, it's a big file)
+
+
+
+::: {.panel-tabset}
+
+## Exercise
+
+```{webr}
+#| exercise: ea1
+library(tidyverse)
+library(lubridate)
+
+#https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
+df <- ________("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 ```
 
-[welcome to class!]{style="color:white"}
 
-## Tour of R and RStudio
+## Hint
 
-R is just a programming language and can be open in any coding program like Sublime or Visual Code Studio. But we're going to focus on using R in the environment known as RStudio because it easily shows all the different parts, like plots and objects, well.
+::: { .hint exercise="ea1"}
 
-When you first open RStudio, the app is divided into three sections.
+function starts with an *r*.
+two words separated with a "_"
 
-Most sections have tabs for even more additional ways to view different sorts of things.
+:::
 
-*These sections can be customized and placed wherever you want through the RStudio menu options (if you'd rather the Files tab be in the top right instead of the top left, for example). **Preferences \> Pane Layout***
+## Solution
 
-![](images/left.png?classes=shadow){width="100%"}
+::: { .solution exercise="ea1"}
 
-The tall section on the left is the *console* and that's where you can type in R code to execute.
 
-This code is also called *commands* or *functions*.
+```{webr importing-solution}
+#| exercise: ea1
+#| solution: true
+library(tidyverse)
+library(lubridate)
 
-![](images/top-right.png?classes=shadow){width="100%"}
-
-In the top right section, there's the **Environment** tab where you can see the data or objects you are currently working on.
-
-At first this section is empty because you have not loaded any data yet.
-
-There's also a tab in the top right section for **History**-- this is where RStudio keeps track of the commands you run in the console.
-
-![](images/bottom-right.png?classes=shadow){width="100%"}
-
-A *viewer* is on the bottom right, where there are tabs to flip through the **Files** and folder structure of your computer (like in Finder or Explorer), the **Plots** (diagrams) when they've been generated, your list of available R **Packages**, **Help** information etc.
-
-### Reproducibility: Save your scripts
-
-There's a difference between quick, on-the-fly analysis and analysis you want to rerun later on.
-
-The code you type out and run in console can be copied and pasted and saved in scripts and R Markdown files. Scripts end with .R file extension and R Markdown files, which mixes both R code and Markdown code, end with .Rmd.
-
-**R scripts versus R Markdown**
-
-You may hear mentions of "R Markdown" and that's essentially the same thing as R scripts except with some enhanced formatting so that the code can be published as a pdf or a website or notebook. R scripts and R Markdown can only be opened by coding programs but the websites or PDFs generated by R Markdown can be open by non-programming people. It's a means for communicating your results effectively to a wider audience. Compare the differences [here](https://github.com/wpinvestigative/helicopters_dc/blob/master/scripts/01_process.R) and [here](https://github.com/wpinvestigative/helicopters_dc/blob/master/03_mapbox_helis.Rmd).
-
-In this course we'll be alternating between typing code in the console and typing and saving code in a script. The code that's disposable and written just for quick exploration can be and will be written in the console. Code we want to reuse and re purpose later on should be saved in a script.
-
-![](images/four-panes%20copy.png?classes=shadow){width="100%"}
-
-These R source code files can be viewed in a **Source** section and pushes the console window down to accommodate.
-
-To create a new script go through the menu *File \> New File \> R Script* or through the green plus button on the top left. This will expand the 3 windows in RStudio to 4. The script viewer will appear in the top left quadrant and push the console window into the lower left.
-
-![](images/new.png?classes=shadow){width="25%"}
-
-The file extensions for these files when saved ends with **.R**
-
-Any code we type in here can be run in the console. Hitting the `Run` button at the top of the script window will run the line of code on which the cursor is sitting.
-
-To run multiple lines of code, highlight them and click `Run`.
-
-![](images/run_code.png?classes=shadow){width="100%"}
-
-Be sure to save your scripts after you create them. And also save before running your code in case you write code that makes R crash-- which will happen once in a while.
-
-## Scripts
-
-R is an interpreter that uses a command line based environment.
-
-This means that you have to type commands, rather than use the mouse and menus.
-
-This has the advantage that you do not always have to retype commands.
-
-You can store your commands in files, the so-called *scripts*. These scripts have typically file names with the extension **.R** as in **script.R**.
-
-You can open an editor window to edit these files by clicking *File \> New* or *File \> Open file...*
-
-You can run (send to the console window) part of the code by selecting lines and pressing **CTRL+ENTER** or **CMD+ENTER** or click the *Run* button at the top of the script editor window. If you do not select anything, R will run the line your cursor is on.
-
-You can always run the whole script with the function `source()`
-
-For example, to run the entire saved **script.R** if it's in the root directory of the working directory, type
-
-```{r run_script, eval=F}
-source("script.R")
+#https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
+df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 ```
 
-You can also click *Run all* in the editor window or type **CTRL+SHIFT+S** or *CMD+SHIFT+S*
 
-## Project directory habits
-
-Your *working directory* is the folder on your computer in which you are currently working. When you ask R to open a certain file, it will look in the working directory for this file, and when you tell R to save a data file or figure, it will save it in the working directory.
-
-Before you start working, please set your working directory to where all your data and script files are or should be stored.
-
-*When you see code in a black box throughout this class, **I want you to run that code in R unless noted otherwise**. You can run it in the console, I'd prefer you do so in a script so you can see your history. In the video, you'll see me swap back and forth between coding in the console and the script. This really depends on if I'm experimenting with code quickly or if it's something I know I should track. Often I will copy and paste code executed from the console to growing script as an afterthought. Also, **be sure to read the commented out code** because I try to give additional context, like tips on what to do if the command fails.*
-
-This is an example of setting a working directory to a manual directory on your computer.
-
-```{r setwd, eval=F, warning=F, message=F}
-# On a mac, it'd look like this
-setwd("~/projects/learn-r-journalism")
-
-# On a PC, it might look like this
-setwd("C:/Documents/learn-r-journalism")
-```
-
-*Make sure that slashes are forward slashes and that you don't forget the quotation marks.*
-
-Within RStudio, you can also set the working directory via the menu *Tools \> Set Working Directory*
-
-[ ](images/setwd.png?classes=shadow){width="70%"}
-
-The commands above, `setwd()` was an example of setting an **absolute** folder.
-
-This works for you for the purposes of this class, but if you wanted to share your methodology and script in the future or if you wanted to save run the code on another computer it would likely **not** work because it would be looking through a folder structure that doesn't exist on any computer except the one where the original script was written. This is not ideal for reproducibility.
-
-Working directories are a tough concept. If you're curious about learning the BEST method for setting up directories for each project you're working on, I've got [some documentation](https://learn.r-journalism.com/en/publishing/workflow/r-projects/).
-
-Also, if you're still curious, I follow [this structure](https://rstats.wtf/project-oriented-workflow.html) for all my R projects.
-
-## Syntax
-
-You must follow pretty specific syntax rules for it to work. R won't guess for you.
-
-![](images/left.png?classes=shadow){width="100%"}
-
--   R is case-sensitive (unlike SQL) [intepreted language](https://en.wikipedia.org/wiki/Interpreted_language) (unlike C)
--   Can enter commands at prompt `>` or in batch
--   Comments are preceded by `#`
-    -   This is important to use often in your code for documentation
-    -   You'll see it often in this course
--   Statements are lines of code such as functions and object assignments
-    -   Enters in code (as in a new line) or semi-colons will separate statements
-
-## Libraries
-
-One of the many benefits of R is that it is open source and free. This means users like you and me can create code that we use code that people in the data community created to make everyone's lives easier.
-
-These shared code snippets can help you do something as simple as combining spreadsheets in a folder or something as complicated as seasonally adjusting data in a time series.
-
-They are organized in so-called *packages* or *libraries*.
-
-You can do a lot of statistical analysis in R without any additional libraries— this is called base R.
-
-But other users have created libraries with functions that solve common problems. R package users download only the libraries that they need for an individual project.
-
-To get a list of all installed packages, go to the packages window or type `library()` in the console window. If the box in front of the package name is ticked in the packages window, the package is loaded and the functions within it are ready to be called.
-
-There are many more packages available on the R website. If you want to install and use a package (for example, the packaged called "dplyr") you should:
-
--   Install the package: click `install packages` in the packages window and type `dplyr` or type `install.packages("dplyr")` in the console window.
--   Load the package: Check box in front of `dplyr` or type `library("dplyr")` in the console window.
-
-## Common R commands
-
-R can be used as a calculator.
-
-Just type an equation in the console window after the `>`
-
-*In those code sections, the code preceded by \## is the output of the code from the lines above.*
-
-Please type in `10^2 + 26` into the R environment below and click `Run code`.
-
-```{webr 4}
-#| exercise: getting_started_1
-
-```
-
-```{webr 5}
-#| exercise: getting_started_1
+```{webr importing-grade}
+#| exercise: ea1
 #| check: true
+gradethis::grade_this_code()
+```
+:::
 
-if (identical(.result, 10^2 + 26)) {
-  list(correct = TRUE, message = "Nice work!")
-} else {
-  list(correct = FALSE, message = "That's incorrect, sorry.")
+:::::
+
+
+## Exploring steps
+
+What to do when you first get a data set? Poke around and see what you're working with.
+
+Use the function on the **df** object you imported into your R environment.
+
+We want to look at all the columns available to work with in the data. In Excel, you could just open up the file and click and scroll around but this time we want to do it within the R environment.
+
+
+::: {.panel-tabset}
+
+## Exercise
+
+```{webr glimpse}
+#| exercise: glimpse
+________df_
+```
+
+
+## Hint
+
+::: { .hint exercise="glimpse"}
+Starts with a *g*
+Also, don't forget that functions need parentheses.
+:::
+
+## Solution
+
+::: { .solution exercise="glimpse"}
 }
-
+```{webr glimpse-solution}
+#| exercise: glimpse
+#| solution: true
+glimpse(df)
 ```
 
-### Workspace
-
-You can give numbers a name.
-
-By doing so, they become so-called variables which can be used later.
-
-You can assign values to an object name with either a `=` or `<-`.
-
-The command below sets `4` as `a`.
-
-```{webr 6}
-a <- 4
-a
-```
-
-`a` is now saved up in the `Environment` tab in RStudio.
-
-![](images/environment.png){width="100%"}
-
-You can do calculations with `a` now.
-
-Try multiplying `a` with any number.
-
-`a * _`
-
-```{webr 7}
-a *
-```
-
-If you specify `a` again, it will forget what value you had before because you did not assign it to anything.
-
-```{webr 8}
-#| exercise: getting_started_11
-a
-```
-
-You can also assign a value to `a` using the old one
-
-```{webr 9}
-#| envir: myenv
-#| exercise: getting_started_12
-#| autorun: true
-a <- a + 10
-a
-```
-
-To remove all variables from R's memory, type
-
-```{webr 10}
-rm(list=ls())
-```
-
-or click the "clear all" broom button in the work space window.
-
-[ ](images/clear_objects.png?class=shadow){width="70%"}
-
-## Objects in R
-
-### Scalars and vectors
-
-Like in many other programs, R organizes numbers in *scalars* (a single number 0-dimensional), *vectors* (a row of numbers, also called arrays - \`-dimensional) and *matrices* (which we won't get into now).
-
-The `a` you defined was scalar.
-
-To define a vector with the numbers 3,4, and 5, you need the function `c()` which is short for concatenate (or paste together).
-
-```{webr}
-#| exercise: getting_started_12
-b <- c(3,4,5)
-b
-```
-
-## Functions
-
-If you would like to compute the mean of all the elements in the vector `b` from the example above, you could type
-
-Please type out `(300+4000+50)/3` in the code tester below:
-
-```{webr}
-#| exercise: getting_started_2
+```{webr glimpse-check}
+#| exercise: glimpse
 #| check: true
-#type in and run the code above
+gradethis::grade_this_code()
 ```
 
-```{webr}
-#| exercise: getting_started_2
+
+:::
+
+::::
+
+
+## Range
+
+Alright, we know that there are 24 different columns and 63,167 rows (each one a different disaster declaration) in this data set. That's a lot to work with!
+
+We also see in the `<>` what type of data is within each of the columns (you can't mix).
+
+* `<chr>` for characters or strings
+* `<dbl>` for numbers
+* `<dttm>` for date times
+
+So `glimpse()` only gave us a sample of the first few values in each column. 
+
+Next, we can drill down into individual columns we're interested in.
+
+**incidentBeginDate** could be useful if we want to track incidents overtime.
+
+We should check how far back and how recent the incidents are.
+
+Use a function on the **df** object to determine the range of dates for incidents.
+
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr range}
+#| exercise: range
+_____df_incidentBeginDate_
+```
+
+## Hint
+::: { .hint excerise="range}
+function starts with an *r*.
+Also, in Base R, to focus on a single column in a data frame, 
+you need a dollar sign between the data frame name and column name
+:::
+
+## Solution
+
+::: { .solution exercise="range"}
+```{webr range-solution}
+#| exercise: range
+#| solution: true
+range(df$incidentBeginDate)
+```
+
+
+```{webr range-check}
+#| exercise: range
 #| check: true
-if (identical(.result, (300+4000+50)/3)) {
-  list(correct = TRUE, message = "Woo Hoo!")
-} else {
-  list(correct = FALSE, message = "Whoops, not correct, sorry.")
-}
+gradethis::grade_this_code()
 ```
 
-But when the vector is very long, this is very boring and time-consuming work.
+:::
+::::
 
-Functions do things to data. R is built on them. Some functions come with R, like `median()` or `summary()` and others come as part of packages that others have created.
+## Table
 
-When you use a function to compute an average, you'll type
+Did any other columns catch your eye?
 
-```{r mean_two, eval=F}
-mean(x=b)
+Hopefully **incidentType** did. 
+
+Let's next get a sense of what type of disasters are listed in this data set.
+
+In Base R, the quick way to do this is to use the function `table()` around a column and data frame.
+
+Try using the function below on the column `incidentType`
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr types}
+#| exercise: types
+### Using base R
+table(df_____________)
+
 ```
 
-Within the brackets you specify the *arguments*.
+## Hint
 
-Arguments give extra information to the function. In this case, the argument *x* says of which set of numbers (vector) the mean should computed (namely of b).
+::: { .hint exercise="types"}
+In Base R, you need a special character between the data frame name and column name
+:::
 
-Sometimes the name of the argument is not necessary:
+## Solution
 
-```{webr}
-#| exercise: getting_started_3
-b <- c(300,4000,50)
-mean(b)
+::: { .solution exercise="types"}
+```{webr types-solution}
+#| exercise: types
+#| solution: true
+table(df$incidentType)
 ```
 
-Also works.
 
-## Plots
-
-R can make simple graphics right away.
-
-```{webr}
-#| exercise: getting_started_4
-# rnorm() is a base function that creates random samples from a random distribution
-
-x <- rnorm(100)
-
-# plot() is a base function that charts
-
-plot(x)
+```{webr types-check}
+#| exercise: types
+#| check: true
+gradethis::grade_this_code()
 ```
 
--   In the first line, 100 random numbers are assigned to the variable x, which becomes a vector by this operation.
--   In the second line, all these values are plotted in the plot window.
 
-## Not available data
+:::
+::::
 
-When you work with real data, you will encounter missing values because instrumentation failed or human error.
+## Count
 
-When a data is *not available*, you'll often find an `NA` instead of a number.
+Alright, you can see Biological, Chemical, Coastal Storm, etc...
 
-```{webr}
-j <- c(1,2,NA)
+It might take sometime to figure out which is the most... Since it's ordered alphabetical.
+
+So `table()` is a quick exploratory command from Base R but if you want to save it as a dataframe, then the **dplyr** method is better. 
+
+Use the `count()` function on **df**. Because we're using a function from the **dplyr** library, which is part of the tidyverse suite of packages, then we don't need to use a `$` to focus on the specific column `incidentType`.
+
+The function is structured so that the first argument in the function is always the data frame and second one is the column in the data frame, separated with a comma.
+
+Try the `count()` function here on the `incidentType` column of **df**.
+
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr count}
+#| exercise: count
+incident_types <- _____(df, _________)
+
+incident_types
 ```
 
-Computing statistics of incomplete data sets is strictly not possible.
+## Hint
 
-maybe the largest value occurred during the weekend when you didn't measure. Therefore, R will say that it doesn't know what the largest value of `j` is
+::: { .hint exercise="count"}
+These are how tidy functions are structured:
+function_name(dataframe_name, column_name)
+:::
 
-```{webr}
-max(j)
+## Solution
+
+::: { .solution exercise="count"}
+
+```{webr count-solution}
+#| exercise: count
+#| solution: true
+incident_types <- count(df, incidentType)
+
+incident_types
 ```
 
-If you don't mind about the missing data and want to compute the statistics anyway, you can add the argument `na.rm=TRUE` (Should I remove the `NA`s? Yes)
 
-```{rwebr}
-max(j, na.rm=T)
+```{webr count-check}
+#| exercise: count
+#| check: true
+gradethis::grade_this_code()
 ```
 
-*`NA`s will also affect any sort of math if you're not careful*
+:::
+::::
 
-```{webr}
-sum(j)
-# compared to
-sum(j, na.rm=T)
+
+Okay, great. The default new column is named "n".
+
+We can change that by adding an extra argument to the `count()` function: `name="name_of_column"`
+
+Fill out the code below but call the new column you're creating "total".
+
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr count2}
+#| exercise: count2
+incident_types <- _____(df, _________, name="______")
+
+incident_types
 ```
 
-Here are [some](http://faculty.nps.edu/sebuttre/home/R/missings.html) [links](https://datascienceplus.com/missing-values-in-r/) on how to [handle](https://stats.idre.ucla.edu/r/faq/how-does-r-handle-missing-values/) `NA`s in your data
+## Hint
 
-## Base R versus Tidyverse
+::: { .hint exercise="count2"}
+You're passing it a string so make sure the 
+column name is in between quotation marks
+:::
 
-I will often mention "Base R" and "Tidyverse" throughout the course.
+## Solution
 
-Base R is what you get when you install R and don't install anything extra.
+::: { .solution exercise="count2"}
+```{webr count2-solution}
+#| exercise: count2
+#| solution: true
+incident_types <- count(df, incidentType, name="total")
 
-Everything you do in Tidyverse-- the importing and wrangling of data, as well as the visualizations-- can be done with Base R. It's just older, the syntax is trickier, and it unfortunately has huge learning curve.
+incident_types
+```
 
-For the purposes of this class, you'll learn just enough Base R to get things done but we'll spend most of our time using functions in packages that have since been created by users to make our lives easier and have a good history of support from their creators.
+
+```{webr count2-check}
+#| exercise: count2
+#| check: true
+gradethis::grade_this_code()
+```
+
+:::
+
+::::
+
+## Arrange
+
+Great! Now we're looking at table instead of a cluster of incident types.
+
+This is much easier to scan.
+
+But we're still dealing with alphabetically sorted incidents. 
+
+We need to look at which disaster types have occurred most often over time.
+
+We're going to use a new function called `arrange()`
+
+We have the new object data frame with the counts of incidents that you called **incident_types**.
+
+We just need to use the `arrange()` function on the dataframe, specifically the new column you created called `total`.
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr arrange}
+#| exercise: arrange
+incident_types_arranged <- arrange(__________, _____)
+
+incident_types_arranged
+```
+
+## Hint
+
+::: { .hint exercise="arrange"}
+Is your first argument in arrange() the name of the 
+newer dataframe you created using count()?
+  
+Also, you don't need to put "total" in quotation marks this time!
+Because column names aren't strings. They're objects.
+:::
+
+## Solution
+
+::: { .solution exercise="arrange}
+```{webr arrange-solution}
+#| exercise: arrange
+#| solution: true
+incident_types_arranged <- arrange(incident_types, total)
+
+incident_types_arranged
+```
+
+```{webr arrange-check}
+#| exercise: arrange
+#| check: true
+grade_this_code()
+```
+
+:::
+
+::::
+
+### Arrange descending
+
+Okay, this isn't what we wanted. This is going in ascending order, aka, least to most.
+
+We need most to least!
+
+So we need to adjust the `arrange()` function with the `desc()` function wrapped around the column you're sorting on. 
+
+You're nesting functions.
+
+Adjust your code from before but use the `desc()` formula, too.
+
+
+::: { .panel-tabset}
+
+## Exercise
+
+```{webr arrange2}
+#| exercise: arrange2
+incident_types_arranged <- arrange(__________, ____(_____))
+
+incident_types_arranged
+```
+
+## Hint
+
+::: { .hint exercise="arrange2"}
+Is your first argument in arrange() the name of the 
+newer dataframe you created using count()?
+  
+Also, you don't need to put "total" in quotation marks this time!
+Because column names aren't strings. They're objects.
+:::
+
+## Solution
+
+::: { .solution exercise="arrange2"}
+
+```{webr arrange2-solution}
+#| exercise: arrange2
+#| solution: true
+incident_types_arranged <- arrange(incident_types, desc(total))
+
+incident_types_arranged
+```
+
+
+```{webr arrange2-check}
+#| exercise: arrange2
+#| check: true
+gradethis::grade_this_code()
+```
+
+:::
+
+::::
+
+## Pipes
+
+Great job!
+
+We see that Severe Storms are the most-common disaster types declared.
+
+Then, hurricanes and floods.
+
+Here's the code that got you to this point:
+
+
+
+```{r eval=F}
+df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
+
+incident_types <- count(df, incidentType, name="total")
+incident_types_arranged <- arrange(incident_types, desc(total))
+```

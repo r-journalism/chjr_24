@@ -55,5 +55,11 @@
   },
   "getting_started/data_types.qmd": {
     "data_types.html": "7fd82ce9"
+  },
+  "getting_started/syntax_r_basics.qmd": {
+    "syntax_r_basics.html": "be9418d9"
+  },
+  "getting_started/importing_exporting.qmd": {
+    "importing_exporting.html": "ad558c8e"
   }
 }
