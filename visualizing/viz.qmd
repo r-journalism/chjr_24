@@ -300,6 +300,10 @@ At its core you need to tell it what data you're using, what type of visual geom
 
 ---
 
+![](images/aesmap.png)
+
+---
+
 ![](images/ggplot1.png)
 
 ### Grammatical layers
