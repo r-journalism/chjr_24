@@ -169,8 +169,8 @@ grade_this_code()
 **In each data set, which columns share the most similarity for locations?**
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
+mutable ok_reponse2 = (reponse, n) => { return html`Loading...` };
+viewof reponse2 = Inputs.radio(
   new Map([
     ["GEOID in df and placeCode in county_pop", 1],
     ["designatedArea in df and NAME in county_pop", 2],
@@ -178,7 +178,7 @@ viewof reponse = Inputs.radio(
     ["estimate in county_pop and disasterNumber in county_pop", 4]
   ])
 );
-ok_reponse(reponse, 2);
+ok_reponse2(reponse2, 2);
 ```
 
 ## Joins

@@ -132,16 +132,16 @@ write_csv(df_csv, "data/transformed_data.csv", na="")
 
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
+mutable ok_reponse1 = (reponse, n) => { return html`Loading...` };
+viewof reponse1 = Inputs.radio(
   new Map([
     ['write.csv(df_csv, "data/transformed_data.csv", is.na=F)', 1],
-    ['write_csv(df_csv, "data/transformed_data.csv", NA="")', 2],
+    ['write_csv(df_csv, "data/transformed_data.csv", N.A="")', 2],
     ['write.csv(df_csv, "data/transformed_data.csv", na="")', 3],
     ['write_csv(df_csv, "data/transformed_data.csv", na="")', 4]
   ])
 );
-ok_reponse(reponse, 4);
+ok_reponse1(reponse1, 4);
 ```
 
 
@@ -286,8 +286,8 @@ We won't get into that now but if you're curious, you can explore that in the th
 
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
+mutable ok_reponse2 = (reponse, n) => { return html`Loading...` };
+viewof reponse2 = Inputs.radio(
   new Map([
     ['read_excel("stats.xls", sheet=1, row=5)', 1],
     ['read_excel("stats.xls", sheet=1, skip=5)', 2],
@@ -295,15 +295,15 @@ viewof reponse = Inputs.radio(
     ['read_excel("stats.xls", sheet=1, row=4)', 4]
   ])
 );
-ok_reponse(reponse, 2);
+ok_reponse2(reponse2, 2);
 ```
 
 **If you import an Excel file and it has 5 buffer rows at the top before the real data starts, how do you deal with that using the *readxl* package?**
 
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
+mutable ok_reponse3 = (reponse, n) => { return html`Loading...` };
+viewof reponse3 = Inputs.radio(
   new Map([
     ['read_excel("stats.xls", sheet=1, row=5)', 1],
     ['read_excel("stats.xls", sheet=1, skip=5)', 2],
@@ -311,7 +311,7 @@ viewof reponse = Inputs.radio(
     ['read_excel("stats.xls", sheet=1, row=4)', 4]
   ])
 );
-ok_reponse(reponse, 2);
+ok_reponse3(reponse3, 2);
 ```
 
 **What is the function from the janitor package that eliminates spaces and lowercases the text in the column names?**
@@ -319,8 +319,8 @@ ok_reponse(reponse, 2);
 
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
-viewof reponse = Inputs.radio(
+mutable ok_reponse4 = (reponse, n) => { return html`Loading...` };
+viewof reponse4 = Inputs.radio(
   new Map([
     ['janitor()', 1],
     ['fix_columns()', 2],
@@ -328,7 +328,7 @@ viewof reponse = Inputs.radio(
     ['clean_names()', 4]
   ])
 );
-ok_reponse(reponse, 4);
+ok_reponse4(reponse4, 4);
 ```
 
 ## Done!
