@@ -8,7 +8,6 @@ webr:
     - gradethis
     - readxl
     - DT
-    - flair
     - janitor
 resources:
   - images
