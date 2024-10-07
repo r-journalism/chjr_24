@@ -19,7 +19,7 @@ resources:
 
 
 ```{webr}
-#| setup: true
+#| include: false
 
 library(tidyverse)
 library(lubridate)

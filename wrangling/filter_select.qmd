@@ -14,7 +14,7 @@ resources:
 
 
 ```{webr 2}
-#| setup: true
+#| include: false
 #| 
 
 
