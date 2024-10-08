@@ -4,7 +4,14 @@ engine: knitr
 format: live-html
 webr:
   packages:
-    - tidyverse
+    - readr
+    - lubridate
+    - tidyr
+    - dplyr
+    - gradethis
+    - readxl
+    - janitor
+    - DT
 resources:
   - images
 ---
@@ -36,6 +43,10 @@ floods_match <- floods_adjusted |>
 floods_match_count <- floods_match |> 
   filter(year_match=="Not a match") |> 
   pull(total)
+
+rev_chron_floods <- floods |> 
+  arrange(desc(declarationDate)) |> 
+  slice(1:5)
 
 ```
 
@@ -356,11 +367,11 @@ gradethis::grade_this_code()
 
 ## Slice
 
-Okay, for the rest of this week's class let's see if we can look for a story from the data.
+Okay, for the rest of today's class let's see if we can look for a story from the data.
 
-Recently, there's been a pretty devastating flood in Kentucky, so let's focus on that topic.
+Recently, there's been a pretty devastating flood in North Carolina, so let's focus on that topic.
 
-Can you write the code from mostly scratch? What the function is called and what operator you need to use and the proper syntax for the keyword you're isolating the data frame to?  
+Can you write the code to look only at floods from mostly scratch? What the function is called and what operator you need to use and the proper syntax for the keyword you're isolating the data frame to?  
 
 Start with the original `df` object and pipe.
 
@@ -450,5 +461,17 @@ rev_chron_floods
 #| check: true
 gradethis::grade_this_code()
 ```
+
+
 :::
 ::::
+
+## Pretty table
+
+The output above isn't that nice or searchable. Use the `datatable()` function from the `DT` package.
+
+```{webr}
+library(DT)
+
+datatable(rev_chron_floods)
+```

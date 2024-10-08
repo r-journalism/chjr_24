@@ -4,7 +4,6 @@ engine: knitr
 format: live-html
 webr:
   packages:
-    - tidyverse
     - readr
     - dplyr
     - lubridate
@@ -21,7 +20,8 @@ resources:
 ```{webr}
 #| include: false
 
-library(tidyverse)
+library(readr)
+library(dplyr)
 library(lubridate)
 df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 
@@ -100,7 +100,8 @@ Use the function from the **readr** package to import the csv from the URL. (Thi
 
 ```{webr}
 #| exercise: ea1
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(lubridate)
 
 #https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
@@ -125,7 +126,8 @@ two words separated with a "_"
 ```{webr importing-solution}
 #| exercise: ea1
 #| solution: true
-library(tidyverse)
+library(dplyr)
+library(readr)
 library(lubridate)
 
 #https://www.fema.gov/openfema-data-page/disaster-declarations-summaries-v2
@@ -172,7 +174,7 @@ Also, don't forget that functions need parentheses.
 ## Solution
 
 ::: { .solution exercise="glimpse"}
-}
+
 ```{webr glimpse-solution}
 #| exercise: glimpse
 #| solution: true
@@ -193,7 +195,7 @@ gradethis::grade_this_code()
 
 ## Range
 
-Alright, we know that there are 24 different columns and 63,167 rows (each one a different disaster declaration) in this data set. That's a lot to work with!
+Alright, we know that there are 28 different columns and more than 67,000 rows (each one a different disaster declaration) in this data set. That's a lot to work with!
 
 We also see in the `<>` what type of data is within each of the columns (you can't mix).
 
@@ -514,7 +516,6 @@ gradethis::grade_this_code()
 
 ::::
 
-## Pipes
 
 Great job!
 
@@ -522,13 +523,39 @@ We see that Severe Storms are the most-common disaster types declared.
 
 Then, hurricanes and floods.
 
+## Pipes
+
+Pipes is `|>` which represents "and then."
+
+It allows you to daisy chain functions to transform data in a more readable format. It's very popular and more languages are implementing it. It works only if a function is structured in a way that the first argument is always the dataframe it's altering. For example:
+
+
+![](images/pipe.png)
+
 Here's the code that got you to this point:
-
-
 
 ```{r eval=F}
 df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 
 incident_types <- count(df, incidentType, name="total")
 incident_types_arranged <- arrange(incident_types, desc(total))
+```
+
+## Without Pipes
+
+```{webr}
+counted <- count(df, state, name="disasters")
+sorted_count <- arrange(counted, desc(disasters))
+
+sorted_count
+```
+
+## With Pipes
+
+```{webr}
+sorted_pipes <- df |> 
+  count(state, name="disasters") |> 
+  arrange(desc(disasters))
+
+sorted_pipes
 ```

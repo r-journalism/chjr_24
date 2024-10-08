@@ -5,6 +5,10 @@ format: live-html
 webr:
   packages:
     - dplyr
+    - lubridate
+    - stringr
+    - readr
+    - gradethis
 resources:
   - images
 ---

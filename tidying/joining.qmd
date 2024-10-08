@@ -4,10 +4,14 @@ engine: knitr
 format: live-html
 webr:
   packages:
+    - readr
+    - lubridate
+    - tidyr
     - dplyr
-    - janitor
     - gradethis
     - readxl
+    - janitor
+    - stringr
 resources:
   - images
   - data

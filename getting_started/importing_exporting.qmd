@@ -46,7 +46,7 @@ This explains the values separated with commas part of the file name.
 
 ### Get the URL
 
-If you have the link to a CSV file, right click [the link](https://data.ct.gov/Health-and-Human-Services/Admissions-to-DMHAS-Addiction-Treatment-by-Town-Ye/iyru-82zq/data) of the data and click **Copy Link Address**. This data set can be found on the [Connecticut Open Data Portal](https://data.ct.gov/Health-and-Human-Services/Admissions-to-DMHAS-Addiction-Treatment-by-Town-Ye/iyru-82zq/).
+If you have the link to a CSV file, right click [the link](https://data.ct.gov/Health-and-Human-Services/Admissions-to-DMHAS-Addiction-Treatment-by-Town-Ye/iyru-82zq/data) of the data and click **Copy Link Address**. This data set can be found on the [Connecticut Open Data Portal](https://data.ct.gov/Health-and-Human-Services/Admissions-to-DMHAS-Addiction-Treatment-by-Town-Ye/iyru-82zq/). **NOTE:** This data is no longer available. Download it instead from [here](https://www.andrewbatran.com/data/Admissions_to_DMHAS_Addiction_Treatment_by_Town__Year__and_Month.csv).
 
 ![](images/rightclick.png?classes=shadow){width=100%}
 
@@ -57,7 +57,10 @@ The Base R function to import a CSV file is `read.csv()`. Just put the URL addre
 Click `RUN CODE` to import the data from a  website and look at the first 10 rows.
 
 ```{webr}
-df_csv <- read.csv("https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD&api_foundry=true", stringsAsFactors=F)
+#df_csv <- read.csv("https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD&api_foundry=true", stringsAsFactors=F)
+
+df <- read.csv("https://www.andrewbatran.com/data/Admissions_to_DMHAS_Addiction_Treatment_by_Town__Year__and_Month.csv", stringsAsFactors=F)
+
 
 head(df_csv, 10)
 ```
@@ -95,7 +98,8 @@ Just like before, except instead of the URL, it's the name of the file.
 ## If you don't have readr installed yet, uncomment and run the line below
 #install.packages("readr")
 library(readr)
-df_csv <- read_csv("https://data.ct.gov/api/views/rybz-nyjw/rows.csv?accessType=DOWNLOAD&api_foundry=true")
+df_csv <- read_csv("https://www.andrewbatran.com/data/Admissions_to_DMHAS_Addiction_Treatment_by_Town__Year__and_Month.csv")
+
 ```
 
 As you can see, the `read_csv()` function interpreted the **MonthYear** and **Town** columns as characters and not as Factors as `read.csv()` did.
