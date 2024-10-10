@@ -28,11 +28,11 @@ resources:
 
 
 #designations <- readxl::read_excel(tf1)
-#df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
+df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 #devtools::install_github("r-for-educators/flair")
 
 #library(flair)
-df <- read_csv("data/DisasterDeclarationsSummaries.csv")
+#df <- read_csv("data/DisasterDeclarationsSummaries.csv")
 df_new <- df |> 
   mutate(GEOID=str_c(fipsStateCode, fipsCountyCode))
 
