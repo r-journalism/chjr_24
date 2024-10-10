@@ -6,6 +6,7 @@ webr:
   packages:
     - readr
     - dplyr
+    - lubridate
     - tidyr
     - ggplot2
     - stringr
@@ -24,7 +25,6 @@ resources:
 
 ```{webr 2}
 #| include: false
-#| 
 
 
 #designations <- readxl::read_excel(tf1)
@@ -69,7 +69,7 @@ ok_reponse <- function(reponse, n) {
 
 Before we begin, let's bring in the data we've been working with.
 
-```{r imported, eval=F}
+```{r eval=F}
 df <- read_csv("https://www.fema.gov/api/open/v2/DisasterDeclarationsSummaries.csv")
 
 df_new <- df |> 
@@ -95,13 +95,13 @@ Let's take a look at what were working with. Check out `joined_new` with the usu
 
 ## Hint
 
-::: {.hint exercise="glimpse"}
+::: { .hint exercise="glimpse"}
 function starts with an *g*.
 :::
 
 ## Solution
 
-::: {.solution exercise="glimpse"}
+::: { .solution exercise="glimpse"}
 ```{webr glimpse-solution}
 #| exercise: glimpse
 #| solution: true
@@ -137,7 +137,7 @@ annual_disasters
 
 ## Hint
 
-::: {.hint exercise="annual_disasters"}
+::: { .hint exercise="annual_disasters"}
 You only need to add one new line. 
 The function starts with a *c* and don't forget to name the column you're creating.
 year should be the second argument in the function.
@@ -145,7 +145,7 @@ year should be the second argument in the function.
 
 ## Solution
 
-::: {.solution exercise="solution"}
+::: { .solution exercise="annual_disasters"}
 ```{webr annual_disasters-solution}
 #| exercise: annual_disasters
 #| solution: true

@@ -6,6 +6,7 @@ webr:
   packages:
     - readr
     - dplyr
+    - lubridate
     - tidyr
     - ggplot2
     - stringr
