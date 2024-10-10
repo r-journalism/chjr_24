@@ -4,7 +4,16 @@ engine: knitr
 format: live-html
 webr:
   packages:
-    - tidyverse
+    - readr
+    - dplyr
+    - tidyr
+    - ggplot2
+    - stringr
+    - janitor
+    - readxl
+    - gradethis
+    - DT
+    - knitr
     - gradethis
     - readxl
     - DT
