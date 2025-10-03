@@ -28,6 +28,9 @@ website:
         contents:
           - visualizing/viz.qmd
           - visualizing/exploratory_viz.qmd
+      - section: Advanced
+        contents:
+          - advanced/tidycensus.qmd
       - text: "---"
       - section: Reference
 
